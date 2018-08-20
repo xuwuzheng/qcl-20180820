@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.m5173.allureLove.dao.CategoryEOMapper" >
+  <resultMap id="BaseResultMap" type="com.m5173.allureLove.model.eo.CategoryEO" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+    <result column="content_url" property="contentUrl" jdbcType="VARCHAR" />
+    <result column="goods_category_id" property="goodsCategoryId" jdbcType="INTEGER" />
+    <result column="goods_category_name" property="goodsCategoryName" jdbcType="VARCHAR" />
+    <result column="goods_category_type" property="goodsCategoryType" jdbcType="VARCHAR" />
+    <result column="index_position" property="indexPosition" jdbcType="INTEGER" />
+    <result column="is_top" property="isTop" jdbcType="INTEGER" />
+    <result column="logo" property="logo" jdbcType="VARCHAR" />
+    <result column="logo_img" property="logoImg" jdbcType="VARCHAR" />
+    <result column="has_next" property="hasNext" jdbcType="VARCHAR" />
+    <result column="memo" property="memo" jdbcType="VARCHAR" />
+  </resultMap>
+</mapper>

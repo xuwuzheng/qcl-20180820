@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.m5173.allureLove.dao.UserEOMapper">
+
+  <resultMap id="BaseResultMap" type="com.m5173.allureLove.model.eo.UserEO">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_phone" jdbcType="VARCHAR" property="userPhone" />
+    <result column="user_password" jdbcType="VARCHAR" property="userPassword" />
+    <result column="user_img" jdbcType="VARCHAR" property="userImg" />
+    <result column="user_token" jdbcType="VARCHAR" property="userToken" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="last_time" jdbcType="TIMESTAMP" property="lastTime" />
+    <result column="total" jdbcType="DECIMAL" property="total" />
+    <result column="age_type" jdbcType="INTEGER" property="ageType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+
+</mapper>
