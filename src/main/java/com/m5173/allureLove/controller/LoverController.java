@@ -11,7 +11,6 @@ import com.m5173.allureLove.model.request.LoverListRequest;
 import com.m5173.allureLove.service.ILoverService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +33,7 @@ public class LoverController extends BaseController {
     @Autowired
     private ILoverService loverService;
 
+
     /**
      * 创建修改恋爱信息
      * @param loverListRequest 接收参数
@@ -42,6 +42,7 @@ public class LoverController extends BaseController {
     @PostMapping("/addLover")
     @ApiOperation(value="创建修改恋爱信息", notes="创建修改恋爱信息")
     public IServiceResponse addLover(@RequestBody LoverListRequest loverListRequest){
+
         LoverEO loverEO = loverService.addLover(loverListRequest);
         BaseResponse<LoverEO> baseResponse = new BaseResponse<>();
         LOGGER.info("创建修改恋爱信息成功:"+loverEO);
@@ -51,16 +52,15 @@ public class LoverController extends BaseController {
     /**
      * 查询恋爱信息详情
      * @param loverListRequest 接收参数
-     * @param request 请求头
      * @return 返回结果
      */
     @PostMapping("/loverDetail")
     @ApiOperation(value="查询恋爱信息详情", notes="查询恋爱信息详情")
-    public IServiceResponse selectLoverDetail(@RequestBody LoverListRequest loverListRequest, HttpServletRequest request){
-        if (StringUtils.isBlank(loverListRequest.getId())){
+    public IServiceResponse selectLoverDetail(@RequestBody LoverListRequest loverListRequest){
+        if (loverListRequest.getId() != null){
             throw new BusinessException(ResponseCodes.EmptyInfo,"查询id");
         }
-        LoverEO loverEO = loverService.selectLoverDetail(request, Long.valueOf(loverListRequest.getId()));
+        LoverEO loverEO = loverService.selectLoverDetail(Long.valueOf(loverListRequest.getId()));
         BaseResponse<LoverEO> baseResponse = new BaseResponse<>();
         baseResponse.setData(loverEO);
         LOGGER.info("恋爱信息详情查询成功,getId:{}"+loverListRequest.getId());
@@ -81,6 +81,9 @@ public class LoverController extends BaseController {
             criteria.orLike("detail", "%" + loverListRequest.getQueryKey() + "%");
             criteria.orLike("tag", "%" + loverListRequest.getQueryKey() + "%");
             criteria.orLike("property", "%" + loverListRequest.getQueryKey() + "%");
+        }
+        if(loverListRequest.getSex() != null){
+            criteria.andEqualTo("sex",""+loverListRequest.getSex()+"");
         }
         if (loverListRequest.getPage() == null){
             loverListRequest.setPage(1);
@@ -108,7 +111,7 @@ public class LoverController extends BaseController {
             throw new BusinessException(ResponseCodes.EmptyInfo,"id");
         }
         BaseResponse<Boolean> baseResponse = new BaseResponse<>();
-        baseResponse.setData(loverService.deleteLover(Long.valueOf(loverListRequest.getId())));
+        baseResponse.setData(loverService.deleteLover(loverListRequest));
         LOGGER.info("删除恋爱信息成功,id:{}",loverListRequest.getId());
         return baseResponse;
     }

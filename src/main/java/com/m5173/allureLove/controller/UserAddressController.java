@@ -44,7 +44,7 @@ public class UserAddressController extends BaseController {
     @PostMapping("/user/addAddress")
     @ApiOperation(value="添加收货地址", notes="添加收货地址")
     public IServiceResponse addAddress(@RequestBody UserAddressRequest userAddressRequest){
-        userService.userInfo(userAddressRequest.getUserToken(), userAddressRequest.getUserId());
+        userService.userInfo(userAddressRequest.getUserToken());
 
         if (StringUtils.isBlank(userAddressRequest.getConsignee())){
             throw new BusinessException(ResponseCodes.EmptyInfo,"收货名称");
@@ -71,7 +71,7 @@ public class UserAddressController extends BaseController {
     @PostMapping("/user/editAddress")
     @ApiOperation(value="查询收货地址", notes="查询收货地址")
     public IServiceResponse editAddress(@RequestBody UserAddressRequest userAddressRequest){
-        userService.userInfo(userAddressRequest.getUserToken(), userAddressRequest.getUserId());
+        userService.userInfo(userAddressRequest.getUserToken());
         if (userAddressRequest.getAddressId() == null){
             throw new BusinessException(ResponseCodes.EmptyInfo, "id");
         }
@@ -92,7 +92,7 @@ public class UserAddressController extends BaseController {
         if (userAddressRequest.getAddressId() == null){
             throw new BusinessException(ResponseCodes.EmptyInfo,"id");
         }
-        userService.userInfo(userAddressRequest.getUserToken(), userAddressRequest.getUserId());
+        userService.userInfo(userAddressRequest.getUserToken());
         BaseResponse<Boolean> baseResponse = new BaseResponse<>();
         baseResponse.setData(userAddressService.deleteAddress(Long.valueOf(userAddressRequest.getAddressId())));
         LOGGER.info("删除收货地址成功");
@@ -107,7 +107,7 @@ public class UserAddressController extends BaseController {
     @PostMapping("/user/address")
     @ApiOperation(value="查询收货地址列表", notes="查询收货地址列表")
     public IServiceResponse queryAddress(@RequestBody UserAddressRequest userAddressRequest){
-        userService.userInfo(userAddressRequest.getUserToken(), userAddressRequest.getUserId());
+        userService.userInfo(userAddressRequest.getUserToken());
         Example example = new Example(UserAddressEO.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("userId",userAddressRequest.getUserId());

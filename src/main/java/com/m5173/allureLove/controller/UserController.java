@@ -33,14 +33,14 @@ public class UserController extends BaseController {
 
     /**
      * 用户登录验证
-     * @param userRequest 登录工号和密码
+     * @param userRequest 登录手机号和密码
      * @return
      */
     @PostMapping("login")
     @ApiOperation(value="用户登录验证接口", notes="用户登录验证接口")
     public IServiceResponse login(@RequestBody UserRequest userRequest){
-        LOGGER.info("用户登录：userPhone：" + userRequest.getUserNo() + ";userPassword:" + userRequest.getUserPassword());
-        UserEO userEO = userService.login(userRequest.getUserNo(), userRequest.getUserPassword());
+        LOGGER.info("用户登录：userPhone：" + userRequest.getUserPhone() + ";userPassword:" + userRequest.getUserPassword());
+        UserEO userEO = userService.login(userRequest.getUserPhone(), userRequest.getUserPassword());
 
         BaseResponse<UserEO> baseResponse = new BaseResponse();
         baseResponse.setData(userEO);
@@ -101,7 +101,7 @@ public class UserController extends BaseController {
     @PostMapping("userInfo")
     @ApiOperation(value="获取用户详情", notes="获取用户详情")
     public IServiceResponse userInfo(@RequestBody UserRequest userRequest){
-        UserEO userEO = userService.userInfo(userRequest.getUserToken(), Long.valueOf(userRequest.getUserId()));
+        UserEO userEO = userService.userInfo(userRequest.getUserToken());
 
         BaseResponse<UserEO> baseResponse = new BaseResponse();
         baseResponse.setData(userEO);

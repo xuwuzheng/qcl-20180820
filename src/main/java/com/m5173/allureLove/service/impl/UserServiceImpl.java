@@ -36,34 +36,37 @@ public class UserServiceImpl extends BaseService<UserEO> implements IUserService
 
     /**
      * 用户登录
-     * @param userNo
+     * @param userPhone
      * @param password
      * @return
      */
     @Override
-    public UserEO login(String userNo, String password) {
-        if (StringUtils.isBlank(userNo)){
-            throw new BusinessException(ResponseCodes.EmptyInfo,"工号");
+    public UserEO login(String userPhone, String password) {
+        if (StringUtils.isBlank(userPhone)){
+            throw new BusinessException(ResponseCodes.EmptyInfo,"手机号");
         }
         if (StringUtils.isBlank(password)){
             throw new BusinessException(ResponseCodes.EmptyInfo,"密码");
         }
 
-        //从数据库根据工号获取用户
+        //从数据库根据手机号获取用户
         Example example = new Example(UserEO.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userNo",userNo);
+        criteria.andEqualTo("userPhone",userPhone);
         UserEO userEO = userEOMapper.selectOneByExample(example);
 
         if (userEO ==null){
             throw new BusinessException(ResponseCodes.NotExist,"该用户");
         }
-        String encyptPassword = encyptPassword(password, userNo);
+        String encyptPassword = encyptPassword(password, userPhone);
         if (!encyptPassword.equals(userEO.getUserPassword())){
             throw new BusinessException(ResponseCodes.InvalidPassword);
         }
         //过滤password信息
         userEO.setUserPassword(null);
+        if(userEO.getSb()){
+            userEO.setSb(null);
+        }
 
         if(StringUtils.isNotBlank(userEO.getUserToken()) && userEO.getLastTime() != null){
             long time = System.currentTimeMillis() - userEO.getLastTime().getTime();
@@ -114,8 +117,8 @@ public class UserServiceImpl extends BaseService<UserEO> implements IUserService
         if (userRequest == null){
             throw new BusinessException(ResponseCodes.EmptyInfo,"参数");
         }
-        if (StringUtils.isEmpty(userRequest.getUserNo())){
-            throw new BusinessException(ResponseCodes.EmptyInfo,"工号");
+        if (StringUtils.isEmpty(userRequest.getUserPhone())){
+            throw new BusinessException(ResponseCodes.EmptyInfo,"手机号");
         }
         if (StringUtils.isEmpty(userRequest.getUserPassword())){
             throw new BusinessException(ResponseCodes.EmptyInfo,"密码");
@@ -124,8 +127,9 @@ public class UserServiceImpl extends BaseService<UserEO> implements IUserService
         UserEO userEO = BeanMapper.map(userRequest, UserEO.class);
 
         //加密密码
-        String encyptPassword = encyptPassword(userRequest.getUserPassword(), userRequest.getUserNo());
+        String encyptPassword = encyptPassword(userRequest.getUserPassword(), userRequest.getUserPhone());
         userEO.setUserPassword(encyptPassword);
+        userEO.setSb(true);
         userEO.setCreateTime(new Date());
         userEOMapper.insert(userEO);
 
@@ -145,15 +149,11 @@ public class UserServiceImpl extends BaseService<UserEO> implements IUserService
     /**
      * 根据token获取登录用户
      * @param userToken 用户登录token
-     * @param userId userId
      */
     @Override
-    public UserEO userInfo(String userToken, Long userId) {
+    public UserEO userInfo(String userToken) {
         if (StringUtils.isBlank(userToken)){
             throw new BusinessException(ResponseCodes.EmptyInfo,"token");
-        }
-        if (userId == null){
-            throw new BusinessException(ResponseCodes.EmptyInfo,"用户id");
         }
 
         //生成token，并保存到cookie中
@@ -161,9 +161,6 @@ public class UserServiceImpl extends BaseService<UserEO> implements IUserService
         if (jsonObject != null) {
             String uidStr = (String)(jsonObject.get(CommonConstants.SERVICE_REQUEST_HEADER_UID));
             long uid = Long.parseLong(uidStr);
-            if(uid != userId.longValue()){
-                throw new BusinessException(ResponseCodes.UserNotLogin);
-            }
 
             //根据主键获取用户
             UserEO userEO = userEOMapper.selectByPrimaryKey(uid);
@@ -171,7 +168,7 @@ public class UserServiceImpl extends BaseService<UserEO> implements IUserService
                 throw new BusinessException(ResponseCodes.UserNotLogin);
             }
 
-            if(StringUtils.equals(userToken, userEO.getUserToken()) && uid == userEO.getId().longValue() && userEO.getLastTime() != null){
+            if(StringUtils.equals(userToken, userEO.getUserToken()) && userEO.getLastTime() != null){
                 long time = System.currentTimeMillis() - userEO.getLastTime().getTime();
                 if(time < loginExpireTime * 1000){
                     LOGGER.info("用户登录有效：" + userEO.toString());

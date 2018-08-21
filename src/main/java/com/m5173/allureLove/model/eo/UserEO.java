@@ -29,6 +29,8 @@ public class UserEO extends BaseEntity {
 
     private Integer sex;
 
+    private Boolean sb;
+
     @Column(name = "last_time")
     private Date lastTime;
 
@@ -113,5 +115,13 @@ public class UserEO extends BaseEntity {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Boolean getSb() {
+        return sb;
+    }
+
+    public void setSb(Boolean sb) {
+        this.sb = sb;
     }
 }

@@ -6,8 +6,10 @@ import com.m5173.allureLove.common.base.BaseService;
 import com.m5173.allureLove.common.util.BeanMapper;
 import com.m5173.allureLove.dao.LoverEOMapper;
 import com.m5173.allureLove.model.eo.LoverEO;
+import com.m5173.allureLove.model.eo.UserEO;
 import com.m5173.allureLove.model.request.LoverListRequest;
 import com.m5173.allureLove.service.ILoverService;
+import com.m5173.allureLove.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tk.mybatis.mapper.entity.Example;
@@ -27,6 +29,8 @@ public class LoverServiceImpl extends BaseService<LoverEO> implements ILoverServ
 
     @Autowired
     private LoverEOMapper loverEOMapper;
+    @Autowired
+    private IUserService userService;
 
     /**
      * 创建修改恋爱信息
@@ -35,6 +39,7 @@ public class LoverServiceImpl extends BaseService<LoverEO> implements ILoverServ
      */
     @Override
     public LoverEO addLover(LoverListRequest loverListRequest){
+        UserEO userEO = userService.userInfo(loverListRequest.getUserToken());
         LoverEO loverEO = BeanMapper.map(loverListRequest, LoverEO.class);
         //判断是否有id，有id就执行修改操作
         if(loverListRequest.getId() != null){
@@ -43,6 +48,7 @@ public class LoverServiceImpl extends BaseService<LoverEO> implements ILoverServ
         }else {
             loverEO.setLikeNumber(0);
             loverEO.setPopular(0);
+            loverEO.setUserId(userEO.getUserId());
             loverEO.setLastUpdateTime(new Date());
             loverEO.setCreateTime(new Date());
             loverEOMapper.insert(loverEO);
@@ -69,7 +75,7 @@ public class LoverServiceImpl extends BaseService<LoverEO> implements ILoverServ
      * @return 返回结果
      */
     @Override
-    public LoverEO selectLoverDetail(HttpServletRequest request, Long id){
+    public LoverEO selectLoverDetail(Long id){
         LoverEO loverEO = loverEOMapper.selectByPrimaryKey(id);
         loverEO.setUserId(null);
         return loverEO;
@@ -77,12 +83,13 @@ public class LoverServiceImpl extends BaseService<LoverEO> implements ILoverServ
 
     /**
      * 删除恋爱信息
-     * @param id 主键
+     * @param loverListRequest 主键
      * @return 返回结果
      */
     @Override
-    public Boolean deleteLover(Long id){
-        loverEOMapper.deleteByPrimaryKey(id);
+    public Boolean deleteLover(LoverListRequest loverListRequest){
+        userService.userInfo(loverListRequest.getUserToken());
+        loverEOMapper.deleteByPrimaryKey(Long.valueOf(loverListRequest.getId()));
         return true;
     }
 

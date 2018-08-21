@@ -2,7 +2,7 @@ package com.m5173.allureLove.model.request;
 
 public class LoverListRequest {
 
-    private String id;
+    private Integer id;
 
     private String nike;
 
@@ -26,11 +26,13 @@ public class LoverListRequest {
 
     private String sortKey;
 
-    public String getId() {
+    private String userToken;
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -120,5 +122,13 @@ public class LoverListRequest {
 
     public void setSortKey(String sortKey) {
         this.sortKey = sortKey;
+    }
+
+    public String getUserToken() {
+        return userToken;
+    }
+
+    public void setUserToken(String userToken) {
+        this.userToken = userToken;
     }
 }

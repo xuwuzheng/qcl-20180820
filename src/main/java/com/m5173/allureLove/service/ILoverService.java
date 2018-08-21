@@ -31,16 +31,16 @@ public interface ILoverService extends IBaseService<LoverEO> {
 
     /**
      * 查询恋爱信息详情
-     * @param goodsId 查询条件
+     * @param id 查询条件
      * @return 返回结果
      */
-    LoverEO selectLoverDetail(HttpServletRequest request, Long goodsId);
+    LoverEO selectLoverDetail(Long id);
 
     /**
      * 删除恋爱信息
-     * @param id 主键
+     * @param loverListRequest 主键
      * @return 返回结果
      */
-    Boolean deleteLover(Long id);
+    Boolean deleteLover(LoverListRequest loverListRequest);
 
 }

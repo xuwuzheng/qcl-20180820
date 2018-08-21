@@ -43,7 +43,7 @@ public class FeedbackController extends BaseController {
     @PostMapping("/addFeedBack")
     @ApiOperation(value="添加反馈", notes="添加反馈")
     public IServiceResponse addAddress(@RequestBody FeedbackRequest feedbackRequest){
-        userService.userInfo(feedbackRequest.getUserToken(), feedbackRequest.getUserId());
+        userService.userInfo(feedbackRequest.getUserToken());
 
         if (StringUtils.isBlank(feedbackRequest.getContent())){
             throw new BusinessException(ResponseCodes.EmptyInfo,"反馈内容");

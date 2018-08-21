@@ -30,7 +30,7 @@ public class LoverEO extends BaseEntity {
     private Integer sex;
 
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
 
     @Column(name = "last_update_time")
     private Date lastUpdateTime;
@@ -118,11 +118,11 @@ public class LoverEO extends BaseEntity {
         this.sex = sex;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 }
