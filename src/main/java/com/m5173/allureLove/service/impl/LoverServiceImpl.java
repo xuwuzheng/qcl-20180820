@@ -41,18 +41,20 @@ public class LoverServiceImpl extends BaseService<LoverEO> implements ILoverServ
     public LoverEO addLover(LoverListRequest loverListRequest){
         UserEO userEO = userService.userInfo(loverListRequest.getUserToken());
         LoverEO loverEO = BeanMapper.map(loverListRequest, LoverEO.class);
-        //判断是否有id，有id就执行修改操作
-        if(loverListRequest.getId() != null){
-            loverEO.setLastUpdateTime(new Date());
-            loverEOMapper.updateByPrimaryKey(loverEO);
-        }else {
-            loverEO.setLikeNumber(0);
-            loverEO.setPopular(0);
-            loverEO.setUserId(userEO.getUserId());
-            loverEO.setLastUpdateTime(new Date());
-            loverEO.setCreateTime(new Date());
-            loverEOMapper.insert(loverEO);
+        //判断用户是否存在信息
+        Example example = new Example(LoverEO.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId",""+userEO.getUserId()+"");
+        LoverEO loverEO1 = loverEOMapper.selectOneByExample(example);
+        if(loverEO1 != null){
+            loverEOMapper.delete(loverEO1);
         }
+        loverEO.setLikeNumber(0);
+        loverEO.setPopular(0);
+        loverEO.setUserId(userEO.getUserId());
+        loverEO.setLastUpdateTime(new Date());
+        loverEO.setCreateTime(new Date());
+        loverEOMapper.insert(loverEO);
         return loverEO;
     }
 
